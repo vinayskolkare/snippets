@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Admission Slider</title>
+    <title>Mobile Admission Slider - Full Width</title>
     <style>
-        /* Mobile Slider Container Styles */
+        /* Mobile Slider Container - Full width, zero edge padding/margins */
         .nhps-mobile-slider-wrapper {
             position: relative;
             width: 100%;
-            max-width: 480px; /* Ideal for mobile viewports */
             height: 480px;
-            margin: 0 auto;
+            margin: 0;
+            padding: 0;
             overflow: hidden;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 0; /* Removed rounding to fit flush edge-to-edge */
+            box-shadow: none; /* Removed heavy card shadow */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #0f172a;
         }
@@ -32,7 +32,7 @@
             flex-direction: column;
             justify-content: flex-end;
             align-items: center;
-            padding: 20px;
+            padding: 20px 15px; /* Internal content padding safe zones, zero outer edge offset */
             box-sizing: border-box;
             background-size: cover;
             background-position: center;
@@ -48,7 +48,7 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(5, 10, 25, 0.4), rgba(11, 29, 58, 0.85));
+            background: linear-gradient(to bottom, rgba(5, 10, 25, 0.3), rgba(11, 29, 58, 0.85));
             z-index: 1;
         }
 
@@ -56,8 +56,8 @@
         .nhps-layer-graphics {
             position: absolute;
             top: 15px;
-            width: 80%;
-            max-width: 220px;
+            width: 75%;
+            max-width: 200px;
             z-index: 2;
             animation: floatGraphics 3s ease-in-out infinite alternate;
         }
@@ -132,7 +132,7 @@
             display: inline-block;
             border-radius: 30px;
             overflow: hidden;
-            padding: 2px; /* Thickness of the snake border */
+            padding: 2px;
             animation: buttonBounce 2s infinite;
         }
 
@@ -141,7 +141,6 @@
             50% { transform: translateY(-4px); }
         }
 
-        /* The spinning gradient border element */
         .nhps-snake-btn-container::before {
             content: '';
             position: absolute;
@@ -204,12 +203,12 @@
 </head>
 <body>
 
-    <!-- Mobile Slider Widget HTML Structure -->
+    <!-- Mobile Full-Width Slider Widget HTML Structure -->
     <div class="nhps-mobile-slider-wrapper" id="mobileSlider">
         
         <!-- Slide 1 -->
-        <div class="nhps-slide active" style="background-image: url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80');">
-            <!-- Layer Floating Graphic Image (e.g., School elements, rocket/shapes) -->
+        <div class="nhps-slide active" style="background-image: url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80');">
+            <!-- Layer Graphic Placeholder (Update src with your actual layer asset) -->
             <img src="https://i.ibb.co/5XZ86XQ/header-elements.png" alt="Layer Graphic" class="nhps-layer-graphics" onerror="this.style.display='none';">
             
             <div class="nhps-content">
@@ -217,8 +216,8 @@
                 <h2 class="nhps-title-main">Admission Open</h2>
                 <div class="nhps-pulse-text">2027 – 28</div>
                 <div class="nhps-classes">PLAY SCHOOL, NURSERY, LKG</div>
-                <div style="display: block;">
-                    <!-- Replace the href '#' with your specific registration link -->
+                <div>
+                    <!-- Replace href with your actual registration link -->
                     <div class="nhps-snake-btn-container">
                         <a href="YOUR_REGISTRATION_FORM_LINK_HERE" class="nhps-register-btn">Register Now</a>
                     </div>
@@ -226,15 +225,15 @@
             </div>
         </div>
 
-        <!-- Slide 2 (Optional secondary banner layout) -->
-        <div class="nhps-slide" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80');">
+        <!-- Slide 2 -->
+        <div class="nhps-slide" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80');">
             <div class="nhps-content">
                 <span class="nhps-badge">Limited Seats Available</span>
                 <h2 class="nhps-title-main">Enroll Your Child</h2>
                 <div class="nhps-pulse-text">Shape Their Tomorrow</div>
                 <div class="nhps-classes">Early Years Program</div>
-                <div style="display: block;">
-                    <!-- Replace the href '#' with your specific registration link -->
+                <div>
+                    <!-- Replace href with your actual registration link -->
                     <div class="nhps-snake-btn-container">
                         <a href="YOUR_REGISTRATION_FORM_LINK_HERE" class="nhps-register-btn">Register Now</a>
                     </div>
@@ -278,17 +277,15 @@
 
         function resetTimer() {
             clearInterval(slideInterval);
-            slideInterval = setInterval(nextSlide, 4500); // Change slide every 4.5 seconds
+            slideInterval = setInterval(nextSlide, 4500);
         }
 
-        // Initialize auto slide
         slideInterval = setInterval(nextSlide, 4500);
 
-        // Add basic touch/swipe support for mobile fingers
         let touchStartX = 0;
         let touchEndX = 0;
-
         const sliderElement = document.getElementById('mobileSlider');
+
         sliderElement.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
         }, false);
