@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Admission Slider</title>
+    <style>
+        /* Mobile Slider Container Styles */
+        .nhps-mobile-slider-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 480px; /* Ideal for mobile viewports */
+            height: 480px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+        }
+
+        .nhps-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease-in-out, visibility 0.6s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .nhps-slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Overlay to keep text readable over background images */
+        .nhps-slide::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(5, 10, 25, 0.4), rgba(11, 29, 58, 0.85));
+            z-index: 1;
+        }
+
+        /* Layer Images Styles */
+        .nhps-layer-graphics {
+            position: absolute;
+            top: 15px;
+            width: 80%;
+            max-width: 220px;
+            z-index: 2;
+            animation: floatGraphics 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatGraphics {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-8px); }
+        }
+
+        /* Content Layers */
+        .nhps-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #ffffff;
+            width: 100%;
+            padding-bottom: 10px;
+        }
+
+        .nhps-badge {
+            background: #e11d48;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Pulse Text Transition */
+        .nhps-title-main {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 4px 0;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .nhps-pulse-text {
+            font-size: 15px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin: 0 0 8px 0;
+            animation: textPulse 2s infinite;
+        }
+
+        @keyframes textPulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.04); opacity: 1; text-shadow: 0 0 10px rgba(56, 189, 248, 0.6); }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
+        .nhps-classes {
+            font-size: 13px;
+            font-weight: 600;
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 15px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Attention-Seeking Button with Animating Snake Border */
+        .nhps-snake-btn-container {
+            position: relative;
+            display: inline-block;
+            border-radius: 30px;
+            overflow: hidden;
+            padding: 2px; /* Thickness of the snake border */
+            animation: buttonBounce 2s infinite;
+        }
+
+        @keyframes buttonBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        /* The spinning gradient border element */
+        .nhps-snake-btn-container::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, #38bdf8, #e11d48, #facc15, #38bdf8);
+            animation: rotateSnake 3s linear infinite;
+        }
+
+        @keyframes rotateSnake {
+            100% { transform: rotate(360deg); }
+        }
+
+        .nhps-register-btn {
+            position: relative;
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 28px;
+            border-radius: 28px;
+            display: block;
+            z-index: 1;
+            transition: background 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nhps-register-btn:hover {
+            background: #1e293b;
+        }
+
+        /* Slider Navigation Dots */
+        .nhps-dots {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        .nhps-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: background 0.3s, width 0.3s;
+        }
+
+        .nhps-dot.active {
+            background: #38bdf8;
+            width: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Mobile Slider Widget HTML Structure -->
+    <div class="nhps-mobile-slider-wrapper" id="mobileSlider">
+        
+        <!-- Slide 1 -->
+        <div class="nhps-slide active" style="background-image: url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80');">
+            <!-- Layer Floating Graphic Image (e.g., School elements, rocket/shapes) -->
+            <img src="https://i.ibb.co/5XZ86XQ/header-elements.png" alt="Layer Graphic" class="nhps-layer-graphics" onerror="this.style.display='none';">
+            
+            <div class="nhps-content">
+                <span class="nhps-badge">A Bright Future Starts Here</span>
+                <h2 class="nhps-title-main">Admission Open</h2>
+                <div class="nhps-pulse-text">2027 – 28</div>
+                <div class="nhps-classes">PLAY SCHOOL, NURSERY, LKG</div>
+                <div style="display: block;">
+                    <!-- Replace the href '#' with your specific registration link -->
+                    <div class="nhps-snake-btn-container">
+                        <a href="YOUR_REGISTRATION_FORM_LINK_HERE" class="nhps-register-btn">Register Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2 (Optional secondary banner layout) -->
+        <div class="nhps-slide" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80');">
+            <div class="nhps-content">
+                <span class="nhps-badge">Limited Seats Available</span>
+                <h2 class="nhps-title-main">Enroll Your Child</h2>
+                <div class="nhps-pulse-text">Shape Their Tomorrow</div>
+                <div class="nhps-classes">Early Years Program</div>
+                <div style="display: block;">
+                    <!-- Replace the href '#' with your specific registration link -->
+                    <div class="nhps-snake-btn-container">
+                        <a href="YOUR_REGISTRATION_FORM_LINK_HERE" class="nhps-register-btn">Register Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Dots -->
+        <div class="nhps-dots">
+            <span class="nhps-dot active" onclick="currentSlide(0)"></span>
+            <span class="nhps-dot" onclick="currentSlide(1)"></span>
+        </div>
+    </div>
+
+    <!-- Mobile Slider JavaScript Logic -->
+    <script>
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.nhps-slide');
+        const dots = document.querySelectorAll('.nhps-dot');
+        let slideInterval;
+
+        function showSlide(n) {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                dots[index].classList.remove('active');
+            });
+            
+            slideIndex = (n + slides.length) % slides.length;
+            slides[slideIndex].classList.add('active');
+            dots[slideIndex].classList.add('active');
+        }
+
+        function nextSlide() {
+            showSlide(slideIndex + 1);
+        }
+
+        function currentSlide(n) {
+            showSlide(n);
+            resetTimer();
+        }
+
+        function resetTimer() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 4500); // Change slide every 4.5 seconds
+        }
+
+        // Initialize auto slide
+        slideInterval = setInterval(nextSlide, 4500);
+
+        // Add basic touch/swipe support for mobile fingers
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const sliderElement = document.getElementById('mobileSlider');
+        sliderElement.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        sliderElement.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+                resetTimer();
+            }
+            if (touchEndX > touchStartX + 50) {
+                showSlide(slideIndex - 1);
+                resetTimer();
+            }
+        }
+    </script>
+</body>
+</html>
